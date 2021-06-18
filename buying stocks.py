@@ -13,12 +13,13 @@
 # C주식 : 7주 
 # 남는 돈 : 5천원 
 
+#-----------------------------풀이1
 # ----- 세팅
 budget              = 1000000
 names               = ['A', 'B', 'C']
 prices              = [115000, 51000, 20000]
 optimal_ratio       = [36, 50, 14]
-optimal_balances    = [budget * optimal_ratio[i] / 100 for i in range(len(prices))]
+optimal_balances    = [budget * optimal_ratio[i] / 100 for i in range(len(prices))] # 이상적인 매수 결과
 
 print('budget: ', budget)
 print('target ratio: ', optimal_ratio)
@@ -61,3 +62,32 @@ while any([balance >= price for price in prices]):
 print('남은 돈:', balance)
 for i in range(len(prices)):
     print('종목명:',names[i],', 종목수: ',wallet[i])
+
+
+#------이상적인 매수 금액 이하로 최대한 매수
+limit_buy    = [(optimal_balances[i] // prices[i]) * prices[i] for i in range(len(prices))] #최대 매수 금액
+wallet       = [(optimal_balances[i] // prices[i]) for i in range(len(prices))] # 종목 수
+budget_left  = budget-sum(limit_buy) # 최대 매수 후 남은 금액
+min_diff     = budget_left
+
+#---------------------------------풀이2
+#최대 매수 후 남은 금액으로 매수
+while any([budget_left >= price for price in prices]):
+    
+    for i in range(len(prices)):
+        # 이상 비율에 해당되는 종목 제외
+        if optimal_balances[i] - limit_buy[i] == 0:
+            continue
+
+        diff = abs(optimal_balances[i] - (limit_buy[i]+prices[i])) # 종목 매수시 이상 매수 금액과의 오차
+
+        if diff < min_diff and (budget_left-prices[i])>0: # 종목 매수시 이상 매수 금액과의 오차가 제일 적어지는 종목 매수
+            diff = min_diff
+            action = i
+
+    wallet[action]+=1
+    budget_left -= prices[action]
+
+print('남은 돈: ', budget_left)
+for i in range(len(prices)):
+    print('종목: ',names[i],'종목 수: ',wallet[i])
