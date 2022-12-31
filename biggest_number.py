@@ -3,6 +3,7 @@
 # 0 또는 양의 정수가 담긴 배열 numbers가 매개변수로 주어질 때, 순서를 재배치하여 만들 수 있는 가장 큰 수를 문자열로 바꾸어 return 하도록 solution 함수를 작성해주세요.
 
 
-from itertools import permutations
-arr=list(permutations([str(i) for i in numbers]))
-chance = []
+def solution(numbers):
+    numbers = list(map(str, numbers))
+    numbers.sort(key=lambda x: x * 3, reverse=True)
+    return str(int(''.join(numbers)))
